@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catcryption</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Catcryption</h1>
+
+  <div id="app">
+    <!-- Your keys -->
+    <h2>Your Keys</h2>
+    <button id="generateKeys">Generate Key Pair</button>
+    <pre id="myPublicKey"></pre>
+
+    <hr />
+
+    <!-- Add contact -->
+    <h2>Add Contact</h2>
+    <input id="contactName" placeholder="Name" />
+    <textarea id="contactKey" placeholder="Public key"></textarea>
+    <br />
+    <button id="addContact">Save Contact</button>
+
+    <h3>Contacts</h3>
+    <ul id="contactList"></ul>
+
+    <hr />
+
+    <!-- Encrypt message -->
+    <h2>Encrypt Message</h2>
+    <select id="recipientSelect">
+      <option value="">-- Select Recipient --</option>
+    </select>
+    <br/>
+    <textarea id="plainText" placeholder="Type your message here"></textarea>
+    <br/>
+    <button id="encryptBtn">Encrypt</button>
+
+    <h3>Encrypted Message</h3>
+    <pre id="encryptedOutput"></pre>
+
+    <hr />
+
+    <!-- Decrypt message -->
+    <h2>Decrypt Message</h2>
+    <textarea id="encryptedInput" placeholder="Paste encrypted message here"></textarea>
+    <br/>
+    <button id="decryptBtn">Decrypt</button>
+
+    <h3>Decrypted Message</h3>
+    <pre id="decryptedOutput"></pre>
+  </div>
+
+  <script src="sodium.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
