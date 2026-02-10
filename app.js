@@ -107,6 +107,10 @@ async function init() {
   const decryptedOutput = document.getElementById("decryptedOutput");
   const copyEncryptedBtn = document.getElementById("copyEncryptedBtn");
   const copyDecryptedBtn = document.getElementById("copyDecryptedBtn");
+  const scanQrBtn = document.getElementById("scanQrBtn");
+  const qrScannerDiv = document.getElementById("qrScanner");
+
+  let html5QrCode = null;
 
   // ------------------
   // Render functions
@@ -162,7 +166,7 @@ async function init() {
   generateBtn.onclick = () => {
     const keys = generateKeyPair();
     saveMyKeys(keys);
-    renderMyKey(); // automatically generates QR
+    renderMyKey(); // auto-generate QR
   };
 
   addContactBtn.onclick = () => {
@@ -213,6 +217,50 @@ async function init() {
 
   copyEncryptedBtn.onclick = () => copyToClipboard(encryptedOutput.innerText);
   copyDecryptedBtn.onclick = () => copyToClipboard(decryptedOutput.innerText);
+
+  // ------------------
+  // QR Scanning
+  // ------------------
+  scanQrBtn.onclick = () => {
+    if (html5QrCode) {
+      html5QrCode.stop().then(() => html5QrCode.clear());
+      html5QrCode = null;
+      qrScannerDiv.innerHTML = "";
+      return;
+    }
+
+    html5QrCode = new Html5Qrcode("qrScanner");
+    const config = { fps: 10, qrbox: 250 };
+
+    html5QrCode.start(
+      { facingMode: "environment" },
+      config,
+      (decodedText) => {
+        try {
+          const name = prompt("Enter contact name for this key:");
+          if (!name) return alert("Name required");
+
+          const contacts = loadContacts();
+          contacts.push({ name, publicKey: decodedText });
+          saveContacts(contacts);
+          renderContacts();
+
+          html5QrCode.stop().then(() => html5QrCode.clear());
+          html5QrCode = null;
+          qrScannerDiv.innerHTML = "";
+          alert("Contact added successfully!");
+        } catch (err) {
+          alert("Failed to add contact: " + err.message);
+        }
+      },
+      (errorMessage) => {
+        // scanning error, can ignore
+      }
+    ).catch(err => {
+      console.error(err);
+      alert("Unable to start QR scanner: " + err);
+    });
+  };
 
   // ------------------
   // Initial render

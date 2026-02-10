@@ -14,7 +14,7 @@
     <h2>Your Keys</h2>
     <button id="generateKeys">Generate Key Pair</button>
     <pre id="myPublicKey"></pre>
-    <div id="myQrCode"></div> <!-- QR code displayed here -->
+    <div id="myQrCode"></div> <!-- QR code will appear here -->
 
     <hr />
 
@@ -27,6 +27,12 @@
 
     <h3>Contacts</h3>
     <ul id="contactList"></ul>
+
+    <hr />
+    <!-- QR Scanning -->
+    <h2>Add Contact via QR</h2>
+    <button id="scanQrBtn">Scan Contact QR</button>
+    <div id="qrScanner" style="width:100%; margin-top:10px;"></div>
 
     <hr />
     <!-- Encrypt message -->
@@ -58,8 +64,9 @@
     <pre id="decryptedOutput"></pre>
   </div>
 
-  <!-- QRCode library -->
+  <!-- Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
   <script src="sodium.js"></script>
   <script src="app.js"></script>
 </body>
