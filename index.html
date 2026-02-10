@@ -37,8 +37,11 @@
     <br/>
     <textarea id="plainText" placeholder="Type your message here"></textarea>
     <br/>
-    <button id="encryptBtn">Encrypt</button>
-    <button id="copyEncryptedBtn">Copy Encrypted</button>
+    <!-- Encrypt buttons -->
+<div style="display:flex; gap:10px; margin-bottom:12px;">
+  <button id="encryptBtn">Encrypt</button>
+  <button id="copyEncryptedBtn">Copy Encrypted</button>
+</div>
 
     <h3>Encrypted Message</h3>
     <pre id="encryptedOutput"></pre>
@@ -49,9 +52,10 @@
     <h2>Decrypt Message</h2>
     <textarea id="encryptedInput" placeholder="Paste encrypted message here"></textarea>
     <br/>
-    <button id="decryptBtn">Decrypt</button>
-    <button id="copyDecryptedBtn">Copy Decrypted</button>
-
+   <div style="display:flex; gap:10px; margin-bottom:12px;">
+  <button id="decryptBtn">Decrypt</button>
+  <button id="copyDecryptedBtn">Copy Decrypted</button>
+</div>
     <h3>Decrypted Message</h3>
     <pre id="decryptedOutput"></pre>
   </div>
