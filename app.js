@@ -43,7 +43,6 @@ function encryptMessage(recipientPublicKeyBase64, message) {
     sodium.from_base64(myKeys.privateKey)
   );
 
-  // Return format: senderPublicKey:nonce:ciphertext
   return `${myKeys.publicKey}:${sodium.to_base64(nonce)}:${sodium.to_base64(cipher)}`;
 }
 
@@ -76,6 +75,16 @@ function decryptMessage(encryptedMessage) {
 }
 
 // ----------------------
+// Copy to clipboard
+// ----------------------
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(
+    () => alert("Copied to clipboard!"),
+    () => alert("Failed to copy!")
+  );
+}
+
+// ----------------------
 // Init
 // ----------------------
 async function init() {
@@ -95,23 +104,20 @@ async function init() {
   const encryptedInput = document.getElementById("encryptedInput");
   const decryptBtn = document.getElementById("decryptBtn");
   const decryptedOutput = document.getElementById("decryptedOutput");
+  const copyEncryptedBtn = document.getElementById("copyEncryptedBtn");
+  const copyDecryptedBtn = document.getElementById("copyDecryptedBtn");
 
   // ------------------
   // Render functions
   // ------------------
   function renderMyKey() {
     const keys = loadMyKeys();
-    if (keys) {
-      myKeyOutput.innerText = "Your Public Key:\n\n" + keys.publicKey;
-    } else {
-      myKeyOutput.innerText = "";
-    }
+    myKeyOutput.innerText = keys ? `Your Public Key:\n\n${keys.publicKey}` : "";
   }
 
   function renderContacts() {
     const contacts = loadContacts();
 
-    // Contact list
     contactList.innerHTML = "";
     contacts.forEach((c) => {
       const li = document.createElement("li");
@@ -119,7 +125,6 @@ async function init() {
       contactList.appendChild(li);
     });
 
-    // Recipient dropdown
     recipientSelect.innerHTML = '<option value="">-- Select Recipient --</option>';
     contacts.forEach((c, i) => {
       const option = document.createElement("option");
@@ -141,11 +146,7 @@ async function init() {
   addContactBtn.onclick = () => {
     const name = contactNameInput.value.trim();
     const key = contactKeyInput.value.trim();
-
-    if (!name || !key) {
-      alert("Name and public key are required");
-      return;
-    }
+    if (!name || !key) return alert("Name and public key are required");
 
     const contacts = loadContacts();
     contacts.push({ name, publicKey: key });
@@ -159,23 +160,17 @@ async function init() {
 
   encryptBtn.onclick = () => {
     const selectedIndex = recipientSelect.value;
-    if (selectedIndex === "") {
-      alert("Select a recipient first");
-      return;
-    }
+    if (selectedIndex === "") return alert("Select a recipient first");
 
     const contacts = loadContacts();
     const contact = contacts[selectedIndex];
     const message = plainText.value.trim();
-
-    if (!message) {
-      alert("Type a message first");
-      return;
-    }
+    if (!message) return alert("Type a message first");
 
     try {
       const encrypted = encryptMessage(contact.publicKey, message);
       encryptedOutput.innerText = encrypted;
+      copyToClipboard(encrypted); // auto-copy on encrypt
     } catch (err) {
       alert("Encryption failed: " + err.message);
     }
@@ -183,18 +178,19 @@ async function init() {
 
   decryptBtn.onclick = () => {
     const encryptedText = encryptedInput.value.trim();
-    if (!encryptedText) {
-      alert("Paste an encrypted message first");
-      return;
-    }
+    if (!encryptedText) return alert("Paste an encrypted message first");
 
     try {
       const decrypted = decryptMessage(encryptedText);
       decryptedOutput.innerText = decrypted;
+      copyToClipboard(decrypted); // auto-copy on decrypt
     } catch (err) {
       decryptedOutput.innerText = err.message;
     }
   };
+
+  copyEncryptedBtn.onclick = () => copyToClipboard(encryptedOutput.innerText);
+  copyDecryptedBtn.onclick = () => copyToClipboard(decryptedOutput.innerText);
 
   // ------------------
   // Initial render
