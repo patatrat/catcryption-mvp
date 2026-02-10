@@ -92,6 +92,7 @@ async function init() {
 
   // DOM elements
   const myKeyOutput = document.getElementById("myPublicKey");
+  const myQrCodeDiv = document.getElementById("myQrCode");
   const generateBtn = document.getElementById("generateKeys");
   const addContactBtn = document.getElementById("addContact");
   const contactNameInput = document.getElementById("contactName");
@@ -113,6 +114,27 @@ async function init() {
   function renderMyKey() {
     const keys = loadMyKeys();
     myKeyOutput.innerText = keys ? `Your Public Key:\n\n${keys.publicKey}` : "";
+    renderMyQr();
+  }
+
+  function renderMyQr() {
+    const keys = loadMyKeys();
+    if (!keys) {
+      myQrCodeDiv.innerHTML = "";
+      return;
+    }
+
+    myQrCodeDiv.innerHTML = "";
+    QRCode.toDataURL(keys.publicKey, { width: 200 })
+      .then(url => {
+        const img = document.createElement("img");
+        img.src = url;
+        img.style.width = "200px";
+        img.style.height = "200px";
+        img.style.marginTop = "10px";
+        myQrCodeDiv.appendChild(img);
+      })
+      .catch(err => console.error(err));
   }
 
   function renderContacts() {
@@ -140,7 +162,7 @@ async function init() {
   generateBtn.onclick = () => {
     const keys = generateKeyPair();
     saveMyKeys(keys);
-    renderMyKey();
+    renderMyKey(); // automatically generates QR
   };
 
   addContactBtn.onclick = () => {
@@ -170,7 +192,7 @@ async function init() {
     try {
       const encrypted = encryptMessage(contact.publicKey, message);
       encryptedOutput.innerText = encrypted;
-      copyToClipboard(encrypted); // auto-copy on encrypt
+      copyToClipboard(encrypted);
     } catch (err) {
       alert("Encryption failed: " + err.message);
     }
@@ -183,7 +205,7 @@ async function init() {
     try {
       const decrypted = decryptMessage(encryptedText);
       decryptedOutput.innerText = decrypted;
-      copyToClipboard(decrypted); // auto-copy on decrypt
+      copyToClipboard(decrypted);
     } catch (err) {
       decryptedOutput.innerText = err.message;
     }
